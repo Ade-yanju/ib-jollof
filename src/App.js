@@ -1,29 +1,57 @@
 // src/App.js
 import React, { useState, useEffect, useRef } from "react";
-import {
-  FaInstagram,
-  FaFacebookF,
-  FaTwitter,
-  FaWhatsapp,
-} from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import Lottie from "lottie-react";
+import { FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import logo from "./assets/ibadanJollofLogo.png";
+import steamAnimation from "./steam.json";
 
-// Hero images
+// Partner logos
+import partner1 from "./assets/Cyconet.png";
+import partner2 from "./assets/pepsi.png";
+import partner3 from "./assets/Glovo.png";
+import partner4 from "./assets/dreamers.png";
+
+// Hero & food images
 import gallery1 from "./assets/BeefJollofPack.png";
-import gallery2 from "./assets/chicken.png";
-import gallery3 from "./assets/chickenJollofpack.png";
-import gallery4 from "./assets/chickenLapsOrWings.png";
-import gallery5 from "./assets/coleslaw.png";
+import gallery2 from "./assets/chickenJollofpack.png";
+import gallery3 from "./assets/chicken.png";
+import gallery4 from "./assets/NativeJollofPack.png";
+import gallery5 from "./assets/GizzardCube.png";
 import gallery6 from "./assets/dodo.png";
-import gallery7 from "./assets/friedFish.png";
-import gallery8 from "./assets/GizzardCube.png";
-import gallery9 from "./assets/jambalayapack.png";
-import gallery10 from "./assets/NativeJollofPack.png";
-import gallery11 from "./assets/pepperedsnail.png";
-import gallery12 from "./assets/seaFood.png";
+import gallery7 from "./assets/coleslaw.png";
+import gallery8 from "./assets/seaFood.png";
+import gallery9 from "./assets/friedFish.png";
+import gallery10 from "./assets/chickenLapsOrWings.png";
+import gallery11 from "./assets/jambalayapack.png";
+import gallery12 from "./assets/pepperedsnail.png";
 import gallery13 from "./assets/Turkey.png";
 
-// Customer pics
+// Main menu items
+import main1 from "./assets/JambalayaJollof.png";
+import main17 from "./assets/ChickenJollof.png";
+import main18 from "./assets/SeaFoodJollof.png";
+import main19 from "./assets/NativeJollof.png";
+import main20 from "./assets/BeefJollof.png";
+import main2 from "./assets/Chicken.png";
+import main3 from "./assets/Fish.png";
+import main4 from "./assets/snail.png";
+import main5 from "./assets/turkey.png";
+import main6 from "./assets/Gizzard.png";
+import main21 from "./assets/ChickenWingss.png";
+import main22 from "./assets/Beef.png";
+import main7 from "./assets/Dodo.png";
+import main8 from "./assets/Coleslaw.png";
+import main9 from "./assets/Moi-Moi.png";
+import main10 from "./assets/Coke.png";
+import main11 from "./assets/tigernut.png";
+import main12 from "./assets/Fanta.png";
+import main13 from "./assets/Water.png";
+import main14 from "./assets/Chapman.png";
+import main15 from "./assets/Youghurt.png";
+import main16 from "./assets/Malt.png";
+
+// Customer testimonials
 import cust1 from "./assets/cust1.png";
 import cust2 from "./assets/cust2.png";
 import cust3 from "./assets/cust3.png";
@@ -32,48 +60,92 @@ import cust5 from "./assets/cust5.png";
 import cust6 from "./assets/cust6.png";
 import cust7 from "./assets/cust7.png";
 
-// Theme
-const RED = "#B91C1C";
-const CHARCOAL = "#111111";
-const WHITE = "#FFFFFF";
-const LIGHT_GREEN = "#E6F4EA";
+const RED = "#B91C1C",
+  CHARCOAL = "#111",
+  WHITE = "#FFF",
+  LIGHT_GREEN = "#E6F4EA";
 
-// Reusable Button
-function Button({ onClick, children, style = {} }) {
+// Add full testimonials data
+const testimonials = [
+  {
+    img: cust1,
+    name: "Funke",
+    location: "New Garage, Ibadan",
+    text: "Absolutely loved the jollof! Flavor-packed and fresh.",
+  },
+  {
+    img: cust2,
+    name: "Adewale",
+    location: "Challenge, Ibadan",
+    text: "Quick delivery and the best taste I've ever had.",
+  },
+  {
+    img: cust3,
+    name: "Chidera",
+    location: "Jericho, Ibadan",
+    text: "Portions were generous, and the sides were delicious.",
+  },
+  {
+    img: cust4,
+    name: "Grace",
+    location: "Apata, Ibadan",
+    text: "My go‑to for Friday night meals. Highly recommend!",
+  },
+  {
+    img: cust5,
+    name: "Emeka",
+    location: "Ring-Road, Ibadan",
+    text: "Friendly service, prompt delivery, excellent food.",
+  },
+  {
+    img: cust6,
+    name: "Samuel",
+    location: "Akala Express, Ibadan",
+    text: "Authentic taste just like home cooking.",
+  },
+  {
+    img: cust7,
+    name: "Olawale",
+    location: "Elebu, Ibadan",
+    text: "Best jollof in town. I'll be ordering again!",
+  },
+];
+
+function Button({ onClick, disabled, children, style = {} }) {
   return (
     <button
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
       style={{
         padding: "0.75rem 1.5rem",
-        background: RED,
-        color: WHITE,
+        background: disabled ? "#ccc" : RED,
+        color: disabled ? "#666" : WHITE,
         border: "none",
         borderRadius: 6,
-        cursor: "pointer",
+        cursor: disabled ? "not-allowed" : "pointer",
         fontSize: "1rem",
         transition: "background 0.2s",
         ...style,
       }}
-      onMouseEnter={(e) => (e.currentTarget.style.background = "#F97316")}
-      onMouseLeave={(e) => (e.currentTarget.style.background = RED)}
+      onMouseEnter={(e) =>
+        !disabled && (e.currentTarget.style.background = "#F97316")
+      }
+      onMouseLeave={(e) =>
+        !disabled && (e.currentTarget.style.background = RED)
+      }
     >
       {children}
     </button>
   );
 }
 
-// Two-column Modal
 function Modal({ open, onClose, leftPanel, rightPanel }) {
   if (!open) return null;
   return (
     <div style={styles.modalOverlay}>
-      <div style={styles.modalContent}>
-        <div
-          style={{ background: LIGHT_GREEN, padding: 32, overflowY: "auto" }}
-        >
-          {leftPanel}
-        </div>
-        <div style={{ padding: 32, position: "relative" }}>
+      <div style={styles.modalContentTwoCol}>
+        <div style={styles.modalLeft}>{leftPanel}</div>
+        <div style={styles.modalRight}>
           <button onClick={onClose} style={styles.closeButton}>
             &times;
           </button>
@@ -84,7 +156,6 @@ function Modal({ open, onClose, leftPanel, rightPanel }) {
   );
 }
 
-// Fade-in hook
 function useFadeIn(threshold = 0.3) {
   const ref = useRef();
   const [visible, setVisible] = useState(false);
@@ -99,79 +170,110 @@ function useFadeIn(threshold = 0.3) {
   return [ref, visible];
 }
 
+const foodItems = [
+  // Jollof
+  { name: "Jambalaya Rice", price: 3500, image: main1, type: "jollof" },
+  { name: "Chicken Jollof", price: 2000, image: main17, type: "jollof" },
+  { name: "Beef Jollof", price: 2000, image: main20, type: "jollof" },
+  { name: "Sea Food Jollof", price: 3500, image: main18, type: "jollof" },
+  { name: "Native Jollof", price: 2000, image: main19, type: "jollof" },
+  // Proteins
+  { name: "Gizzard", price: 1500, image: main6, type: "protein" },
+  { name: "Fried Fish", price: 1200, image: main3, type: "protein" },
+  { name: "Chicken", price: 1200, image: main2, type: "protein" },
+  { name: "Peppered Snail", price: 1700, image: main4, type: "protein" },
+  { name: "Turkey", price: 2500, image: main5, type: "protein" },
+  { name: "Beef", price: 600, image: main22, type: "protein" },
+  { name: "Chicken Wing", price: 2000, image: main21, type: "protein" },
+  // Sides
+  { name: "Moi-Moi", price: 1200, image: main9, type: "side" },
+  { name: "Dodo", price: 1000, image: main7, type: "side" },
+  { name: "Coleslaw", price: 1000, image: main8, type: "side" },
+  // Drinks
+  { name: "Fanta", price: 500, image: main12, type: "drink" },
+  { name: "Water", price: 200, image: main13, type: "drink" },
+  { name: "Tiger-Nut", price: 1500, image: main11, type: "drink" },
+  { name: "Coke", price: 500, image: main10, type: "drink" },
+  { name: "Malt", price: 700, image: main16, type: "drink" },
+  { name: "ChapMan", price: 1000, image: main14, type: "drink" },
+  { name: "Yoghurt", price: 800, image: main15, type: "drink" },
+];
+
 export default function App() {
-  // Modal visibility
+  // Nav/modals
   const [orderOpen, setOrderOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [careerOpen, setCareerOpen] = useState(false);
+  const [launchModal, setLaunchModal] = useState(false);
+  const [hoursModal, setHoursModal] = useState(false);
 
-  // “Home” handler
-  const goHome = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setOrderOpen(false);
-    setContactOpen(false);
-    setCareerOpen(false);
-  };
+  // Countdown state
+  const [countdown, setCountdown] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+  const [hoursTargetDate, setHoursTargetDate] = useState(null);
+
+  // Cart & persistence
+  const [cart, setCart] = useState(
+    () => JSON.parse(localStorage.getItem("cart")) || []
+  );
+  const [orderHistory, setOrderHistory] = useState(
+    () => JSON.parse(localStorage.getItem("orderHistory")) || []
+  );
+  useEffect(() => localStorage.setItem("cart", JSON.stringify(cart)), [cart]);
+  useEffect(
+    () => localStorage.setItem("orderHistory", JSON.stringify(orderHistory)),
+    [orderHistory]
+  );
+
+  // Customer info & order flow
+  const [showReview, setShowReview] = useState(false);
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [customerAddress, setCustomerAddress] = useState("");
+
+  // Careers form
+  const [jobRole, setJobRole] = useState("Chef");
+  const [appName, setAppName] = useState("");
+  const [appEmail, setAppEmail] = useState("");
+  const [appExp, setAppExp] = useState("");
+  const [careerSent, setCareerSent] = useState(false);
+
+  // Fade‑in
+  const [whyRef, whyVis] = useFadeIn();
+  const [aboutRef, aboutVis] = useFadeIn();
+  const [testRef, testVis] = useFadeIn();
+  const [footRef, footVis] = useFadeIn();
 
   // Hero carousel
-  const gallery = [
+  const heroGallery = [
     gallery1,
-    gallery2,
-    gallery3,
     gallery4,
-    gallery5,
+    gallery2,
+    gallery11,
     gallery6,
+    gallery9,
+    gallery3,
+    gallery5,
     gallery7,
     gallery8,
-    gallery9,
     gallery10,
-    gallery11,
     gallery12,
     gallery13,
   ];
   const [gIndex, setGIndex] = useState(0);
   useEffect(() => {
     const id = setInterval(
-      () => setGIndex((i) => (i + 1) % gallery.length),
+      () => setGIndex((i) => (i + 1) % heroGallery.length),
       3000
     );
     return () => clearInterval(id);
-  }, [gallery.length]);
+  }, [heroGallery.length]);
 
-  // Testimonials
-  const testimonials = [
-    {
-      img: cust1,
-      text: "Absolutely the best jollof! Hot & flavorful.",
-      name: "Aisha O.",
-    },
-    {
-      img: cust2,
-      text: "Reminds me of home. Exceptional service.",
-      name: "Chidi A.",
-    },
-    {
-      img: cust3,
-      text: "Fast delivery & perfect rice texture.",
-      name: "Funke L.",
-    },
-    {
-      img: cust4,
-      text: "I ordered twice in one week so good!",
-      name: "Olawale C.",
-    },
-    {
-      img: cust5,
-      text: "My friends loved it. Highly recommended.",
-      name: "Demilade A.",
-    },
-    {
-      img: cust6,
-      text: "Consistently excellent every time!",
-      name: "Emeka N.",
-    },
-    { img: cust7, text: "Best food business service.", name: "Fabunmi Favour" },
-  ];
+  // Testimonials carousel (use full objects)
   const [tIndex, setTIndex] = useState(0);
   useEffect(() => {
     const id = setInterval(
@@ -179,165 +281,159 @@ export default function App() {
       5000
     );
     return () => clearInterval(id);
-  }, [testimonials.length]);
+  }, []);
+  const visibleTestimonials = [0, 1, 2].map(
+    (offset) => testimonials[(tIndex + offset) % testimonials.length]
+  );
 
-  // Pricing + labels
-  const jPrices = { 1: 0, 2: 3500, 3: 3500, 4: 2000, 5: 2000, 6: 2000 };
-  const jLabels = {
-    1: "None",
-    2: "Jambalaya Jollof",
-    3: "Sea Food Jollof",
-    4: "Native Jollof",
-    5: "Beef Jollof",
-    6: "Chicken Jollof",
-  };
-  const pPrices = {
-    1: 0,
-    2: 1200,
-    3: 2500,
-    4: 1700,
-    5: 1500,
-    6: 2000,
-    7: 1200,
-    8: 600,
-  };
-  const pLabels = {
-    1: "None",
-    2: "Fried Fish",
-    3: "Turkey",
-    4: "Peppered Snail",
-    5: "Gizzard",
-    6: "Chicken Wings",
-    7: "Chicken",
-    8: "Beef",
-  };
-  const sPrices = { none: 0, coleslaw: 1000, dodo: 1000, moimoi: 1200 };
-  const dPrices = {
-    none: 0,
-    water: 200,
-    coke: 500,
-    fanta: 500,
-    malt: 700,
-    chapman: 800,
-    tigernut: 1500,
-    yoghurt: 1000,
-  };
+  // Partners carousel
+  const partnerLogos = [partner1, partner2, partner3, partner4];
+  const [pIndex, setPIndex] = useState(0);
+  useEffect(() => {
+    const id = setInterval(
+      () => setPIndex((i) => (i + 1) % partnerLogos.length),
+      4000
+    );
+    return () => clearInterval(id);
+  }, []);
+  const visiblePartners = [0, 1, 2].map(
+    (offset) => partnerLogos[(pIndex + offset) % partnerLogos.length]
+  );
 
-  // Form state
-  const [jId, setJId] = useState(1),
-    [jQty, setJQty] = useState(1);
-  const [pId, setPId] = useState(1),
-    [pQty, setPQty] = useState(1);
-  const [side, setSide] = useState("none"),
-    [sideQty, setSideQty] = useState(0);
-  const [drink, setDrink] = useState("none"),
-    [drinkQty, setDrinkQty] = useState(0);
+  // Business‑hours & launch logic
+  const launchDate = new Date(2025, 7, 1, 1, 0, 0);
+  useEffect(() => {
+    const now = new Date();
+    if (now < launchDate) {
+      setLaunchModal(true);
+      startCountdown(launchDate);
+    }
+  }, []);
+  useEffect(() => {
+    if (!launchModal) return;
+    const timer = setInterval(() => startCountdown(launchDate), 1000);
+    return () => clearInterval(timer);
+  }, [launchModal]);
+  useEffect(() => {
+    if (!hoursModal || !hoursTargetDate) return;
+    startCountdown(hoursTargetDate);
+    const timer = setInterval(() => startCountdown(hoursTargetDate), 1000);
+    return () => clearInterval(timer);
+  }, [hoursModal, hoursTargetDate]);
 
-  // Cart
-  const [cart, setCart] = useState([]);
-  const cartSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const cartVat = Math.round(cartSubtotal * 0.0);
-  const cartTotal = cartSubtotal + cartVat;
+  function startCountdown(target) {
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) {
+      setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      setLaunchModal(false);
+      setHoursModal(false);
+      return;
+    }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    setCountdown({ days, hours, minutes, seconds });
+  }
 
-  // Add to cart
-  const addToCart = () => {
-    if (jQty > 0)
-      setCart((c) => [
-        ...c,
-        { label: jLabels[jId], price: jPrices[jId], qty: jQty },
-      ]);
-    if (pQty > 0)
-      setCart((c) => [
-        ...c,
-        { label: pLabels[pId], price: pPrices[pId], qty: pQty },
-      ]);
-    if (side !== "none" && sideQty > 0)
-      setCart((c) => [
-        ...c,
-        {
-          label: side.charAt(0).toUpperCase() + side.slice(1),
-          price: sPrices[side],
-          qty: sideQty,
-        },
-      ]);
-    if (drink !== "none" && drinkQty > 0)
-      setCart((c) => [
-        ...c,
-        {
-          label: drink.charAt(0).toUpperCase() + drink.slice(1),
-          price: dPrices[drink],
-          qty: drinkQty,
-        },
-      ]);
-    setJId(1);
-    setJQty(1);
-    setPId(1);
-    setPQty(1);
-    setSide("none");
-    setSideQty(0);
-    setDrink("none");
-    setDrinkQty(0);
-  };
-  const removeFromCart = (idx) => setCart((c) => c.filter((_, i) => i !== idx));
+  // Cart operations
+  const addToCart = (item) =>
+    setCart((c) => {
+      const found = c.find((i) => i.name === item.name);
+      if (found)
+        return c.map((i) =>
+          i.name === item.name ? { ...i, qty: i.qty + 1 } : i
+        );
+      return [...c, { ...item, qty: 1 }];
+    });
+  const removeFromCart = (item) =>
+    setCart((c) =>
+      c
+        .map((i) => (i.name === item.name ? { ...i, qty: i.qty - 1 } : i))
+        .filter((i) => i.qty > 0)
+    );
+  const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
 
-  // Confirm via WhatsApp
-  const submitOrder = (e) => {
-    e.preventDefault();
-    if (!cart.length) return;
-    let msg = "Order:\n";
-    cart.forEach((i) => (msg += `• ${i.label} x${i.qty}\n`));
-    msg += `Subtotal: ₦${cartSubtotal}\nVAT: ₦${cartVat}\nTotal: ₦${cartTotal}`;
-    const enc = encodeURIComponent(msg),
-      link = /Android|iPhone/.test(navigator.userAgent)
-        ? `whatsapp://send?phone=2347074360740&text=${enc}`
-        : `https://wa.me/2347074360740?text=${enc}`;
-    window.location.href = link;
+  // Review & confirm
+  const reviewOrder = () => setShowReview(true);
+  const cancelReview = () => setShowReview(false);
+  const submitOrder = () => {
+    setShowReceipt(true);
+    setOrderHistory((h) => [
+      {
+        items: cart,
+        total,
+        date: new Date(),
+        phone: customerPhone,
+        address: customerAddress,
+      },
+      ...h,
+    ]);
+    setTimeout(() => {
+      const lines = cart
+        .map((i) => `- ${i.name} x${i.qty} = ₦${i.price * i.qty}`)
+        .join("\n");
+      const msg = `🧾 Order:\n${lines}\nTotal: ₦${total}\nPhone: ${customerPhone}\nAddress: ${customerAddress}`;
+      window.location.href = `https://wa.me/2347074360740?text=${encodeURIComponent(
+        msg
+      )}`;
+    }, 500);
   };
 
-  // Contact form
+  // Contact & careers
   const submitContact = (e) => {
     e.preventDefault();
     const { subject, message } = e.target;
-    window.location.href = `mailto:ibjollof@outlook.com?subject=${encodeURIComponent(
-      subject.value
-    )}&body=${encodeURIComponent(message.value)}`;
+    window.location.href =
+      `mailto:ibjollof@outlook.com?subject=${encodeURIComponent(
+        subject.value
+      )}` + `&body=${encodeURIComponent(message.value)}`;
   };
-
-  // Careers form
-  const [jobRole, setJobRole] = useState("Chef"),
-    [appName, setAppName] = useState(""),
-    [appEmail, setAppEmail] = useState(""),
-    [appExp, setAppExp] = useState("");
-  const [careerSent, setCareerSent] = useState(false);
   const submitCareer = (e) => {
     e.preventDefault();
     setCareerSent(true);
   };
 
-  // Fade-in refs
-  const [whyRef, whyVis] = useFadeIn();
-  const [aboutRef, aboutVis] = useFadeIn();
-  const [testRef, testVis] = useFadeIn();
-  const [footRef, footVis] = useFadeIn();
-
-  // Hover helper
-  function attachHover(style) {
-    return {
-      style,
-      onMouseEnter: (e) => {
-        e.currentTarget.style.transform = "translateY(-6px)";
-        e.currentTarget.style.boxShadow = "0 8px 16px rgba(0,0,0,0.1)";
-      },
-      onMouseLeave: (e) => {
-        e.currentTarget.style.transform = "";
-        e.currentTarget.style.boxShadow = "";
-      },
-    };
-  }
-
-  // WhatsApp community link (mobile app vs. web)
-  // Replace your old communityLink logic with this:
-  const communityLink = "https://chat.whatsapp.com/FU6YGHaEiMpGrj79STqY6k";
+  // Helpers & nav handlers
+  const now = new Date();
+  const openHour = 7,
+    closeHour = 19;
+  const isBeforeLaunch = now < launchDate;
+  const isBusinessOpen =
+    !isBeforeLaunch && now.getHours() >= openHour && now.getHours() < closeHour;
+  const handleOrderClick = () => {
+    if (isBeforeLaunch) return setLaunchModal(true);
+    if (!isBusinessOpen) {
+      let nextOpen;
+      if (now.getHours() < openHour) {
+        nextOpen = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          openHour
+        );
+      } else {
+        nextOpen = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate() + 1,
+          openHour
+        );
+      }
+      setHoursTargetDate(nextOpen);
+      return setHoursModal(true);
+    }
+    setOrderOpen(true);
+  };
+  const goHome = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setOrderOpen(false);
+    setContactOpen(false);
+    setCareerOpen(false);
+    setShowReview(false);
+    setShowReceipt(false);
+  };
 
   return (
     <div
@@ -347,41 +443,85 @@ export default function App() {
         color: CHARCOAL,
       }}
     >
+      {/* LAUNCH MODAL */}
+      <Modal
+        open={launchModal}
+        onClose={() => setLaunchModal(false)}
+        leftPanel={
+          <div style={{ textAlign: "center", padding: 24 }}>
+            <h2 style={{ color: RED }}>Launching Soon!</h2>
+            <p>
+              We open on <strong>August 1, 2025</strong> at{" "}
+              <strong>7 AM</strong> Lagos Time.
+            </p>
+            <h3>
+              {countdown.days}d {countdown.hours}h {countdown.minutes}m{" "}
+              {countdown.seconds}s
+            </h3>
+          </div>
+        }
+        rightPanel={
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+            }}
+          >
+            <img src={logo} alt="Logo" style={{ width: 120 }} />
+          </div>
+        }
+      />
+
+      {/* HOURS MODAL */}
+      <Modal
+        open={hoursModal}
+        onClose={() => setHoursModal(false)}
+        leftPanel={
+          <div style={{ textAlign: "center", padding: 24 }}>
+            <h2 style={{ color: RED }}>We’re Closed</h2>
+            <p>Open 7 AM–7 PM Lagos Time</p>
+            <p>Next opening in:</p>
+            <h3>
+              {countdown.days}d {countdown.hours}h {countdown.minutes}m{" "}
+              {countdown.seconds}s
+            </h3>
+            {hoursTargetDate && (
+              <p>
+                {hoursTargetDate.toLocaleDateString()}{" "}
+                {hoursTargetDate.toLocaleTimeString()}
+              </p>
+            )}
+          </div>
+        }
+        rightPanel={<></>}
+      />
+
       {/* NAV */}
       <nav style={{ ...styles.nav, background: CHARCOAL }}>
-        <img src={logo} alt="" style={{ height: 36 }} />
-        <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <img src={logo} alt="Logo" style={{ height: 36 }} />
+          <motion.span
+            style={{ color: WHITE, fontSize: "1.25rem", fontWeight: "bold" }}
+            initial={{ scale: 1 }}
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+          >
+            Ibadan Jollof
+          </motion.span>
+        </div>
+        <div style={{ display: "flex", gap: 16 }}>
           <a onClick={goHome} style={styles.link}>
             Home
           </a>
-          <a
-            onClick={() => {
-              setOrderOpen(true);
-              setContactOpen(false);
-              setCareerOpen(false);
-            }}
-            style={styles.link}
-          >
+          <a onClick={handleOrderClick} style={styles.link}>
             Order
           </a>
-          <a
-            onClick={() => {
-              setOrderOpen(false);
-              setContactOpen(true);
-              setCareerOpen(false);
-            }}
-            style={styles.link}
-          >
+          <a onClick={() => setContactOpen(true)} style={styles.link}>
             Contact
           </a>
-          <a
-            onClick={() => {
-              setOrderOpen(false);
-              setContactOpen(false);
-              setCareerOpen(true);
-            }}
-            style={styles.link}
-          >
+          <a onClick={() => setCareerOpen(true)} style={styles.link}>
             Careers
           </a>
         </div>
@@ -396,18 +536,16 @@ export default function App() {
           <p style={{ fontSize: "1.1rem", lineHeight: 1.6 }}>
             Order a taste of Ibadan.
           </p>
-          <div style={{ marginTop: 24 }}>
-            <Button
-              onClick={() => setOrderOpen(true)}
-              style={{ marginRight: 16 }}
-            >
-              Order Food
-            </Button>
-            <Button onClick={() => setContactOpen(true)}>Contact Us</Button>
-          </div>
+          <Button
+            onClick={handleOrderClick}
+            disabled={!isBusinessOpen}
+            style={{ marginTop: 24 }}
+          >
+            Order Food
+          </Button>
         </div>
         <div style={styles.heroImgWrap}>
-          <img src={gallery[gIndex]} alt="" style={styles.heroImg} />
+          <img src={heroGallery[gIndex]} alt="Hero" style={styles.heroImg} />
         </div>
       </section>
 
@@ -419,30 +557,16 @@ export default function App() {
         <h2 style={styles.sectionTitle}>
           Why <span style={{ color: RED }}>Choose Us</span>
         </h2>
-        <div style={styles.grid3}>
+        <div style={styles.whyGrid}>
           {[
-            [
-              "🌿",
-              "Friendly environment",
-              "A welcoming, inclusive atmosphere.",
-            ],
-            ["🛒", "Simple ordering", "Order with one click."],
-            ["🚚", "Swift delivery", "Right to your door."],
-            ["😋", "Best taste", "Nutritious & flavorful meals."],
-            ["🎉", "Sponsor events", "Supporting community initiatives."],
-            ["📞", "24/7 support", "Dedicated customer help anytime."],
+            ["🌿", "Friendly environment", "A welcoming atmosphere."],
+            ["🛒", "Simple ordering", "One-click checkout."],
+            ["🚚", "Swift delivery", "To your door."],
+            ["😋", "Best taste", "Flavorful meals."],
+            ["🎉", "Sponsor events", "Community initiatives."],
+            ["📞", "24/7 support", "Help anytime."],
           ].map(([icon, title, desc], i) => (
-            <div
-              key={i}
-              {...attachHover({
-                padding: 24,
-                border: "1px solid #eee",
-                borderRadius: 8,
-                textAlign: "center",
-                transition: "0.2s",
-                cursor: "pointer",
-              })}
-            >
+            <div key={i} style={styles.cardHover}>
               <div style={{ fontSize: "2rem" }}>{icon}</div>
               <h3 style={{ margin: "12px 0", color: CHARCOAL }}>{title}</h3>
               <p style={{ color: "#555" }}>{desc}</p>
@@ -460,18 +584,35 @@ export default function App() {
           <h2 style={{ fontSize: "2rem", color: RED }}>About Us</h2>
           <p style={{ lineHeight: 1.6, marginTop: 16 }}>
             We craft home-style Ibadan jollof rice custom quantities, proteins,
-            sides & drinks, delivered hot and fresh.
+            sides & drinks.
           </p>
-          <Button onClick={() => setOrderOpen(true)} style={{ marginTop: 24 }}>
+          <Button onClick={handleOrderClick} style={{ marginTop: 24 }}>
             Order Food
           </Button>
         </div>
         <div style={styles.aboutImgWrap}>
-          <img src={gallery[gIndex]} alt="" style={styles.heroImg} />
+          <img src={heroGallery[gIndex]} alt="About" style={styles.heroImg} />
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* PARTNERS CAROUSEL */}
+      <section style={styles.partnersSection}>
+        <h2 style={styles.sectionTitle}>
+          Our <span style={{ color: RED }}>Partners</span>
+        </h2>
+        <div style={styles.partnersGrid}>
+          {visiblePartners.map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt={`Partner ${i + 1}`}
+              style={styles.partnerLogo}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* TESTIMONIALS CAROUSEL */}
       <section
         ref={testRef}
         style={{ ...styles.section, opacity: testVis ? 1 : 0 }}
@@ -479,22 +620,16 @@ export default function App() {
         <h2 style={styles.sectionTitle}>
           What <span style={{ color: RED }}>Our Customers Say</span>
         </h2>
-        <div style={styles.grid3}>
-          {testimonials.slice(tIndex, tIndex + 3).map((c, i) => (
+        <div style={styles.testimonialsGrid}>
+          {visibleTestimonials.map((t, i) => (
             <div
               key={i}
-              {...attachHover({
-                padding: 24,
-                border: "1px solid #eee",
-                borderRadius: 8,
-                transition: "0.2s",
-                cursor: "pointer",
-              })}
+              style={{ padding: 24, border: "1px solid #eee", borderRadius: 8 }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                 <img
-                  src={c.img}
-                  alt=""
+                  src={t.img}
+                  alt={t.name}
                   style={{
                     width: 56,
                     height: 56,
@@ -503,251 +638,160 @@ export default function App() {
                   }}
                 />
                 <div>
-                  <strong>{c.name}</strong>
+                  <strong>{t.name}</strong>
                   <br />
-                  <small style={{ color: RED }}>Ibadan, Nigeria</small>
+                  <small style={{ color: RED }}>{t.location}</small>
                 </div>
               </div>
-              <p style={{ margin: "16px 0", lineHeight: 1.6 }}>{c.text}</p>
+              <p style={{ margin: "16px 0", lineHeight: 1.6 }}>“{t.text}”</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer
-        ref={footRef}
-        style={{
-          ...styles.footer,
-          background: CHARCOAL,
-          opacity: footVis ? 1 : 0,
-        }}
-      >
-        <img src={logo} alt="" style={{ height: 40, marginBottom: 16 }} />
-        <div style={{ marginBottom: 16 }}>
-          ibjollof@outlook.com | +234 707 436 0740
-        </div>
-        <div style={{ display: "inline-flex", gap: 16, marginBottom: 16 }}>
-          <a
-            href="https://instagram.com/ibjollof"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaInstagram size={20} style={styles.iconHover} />
-          </a>
-          {/* <a
-            href="https://facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaFacebookF size={20} style={styles.iconHover} />
-          </a> */}
-          <a
-            href="https://twitter.com/IbadanJollof"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaTwitter size={20} style={styles.iconHover} />
-          </a>
-        </div>
-        <div style={{ fontSize: 14, opacity: 0.7 }}>
-          © 2025 IbJollof. All rights reserved.
-        </div>
-      </footer>
-
-      {/* WhatsApp community button */}
-      <a
-        href={communityLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={styles.whatsappBtn}
-      >
-        <FaWhatsapp size={32} />
-      </a>
-
-      {/* ORDER MODAL */}
+      {/* ORDER MODAL (LIST VIEW) */}
       <Modal
         open={orderOpen}
         onClose={() => setOrderOpen(false)}
         leftPanel={
           <>
+            {["jollof", "protein", "side", "drink"].map((type) => (
+              <div key={type}>
+                <h3
+                  style={{ color: RED, marginTop: type === "jollof" ? 0 : 24 }}
+                >
+                  {type.charAt(0).toUpperCase() + type.slice(1)}s
+                </h3>
+                <div style={styles.foodList}>
+                  {foodItems
+                    .filter((i) => i.type === type)
+                    .map((item) => (
+                      <div
+                        key={item.name}
+                        style={{
+                          ...styles.foodItem,
+                          border: cart.find((c) => c.name === item.name)
+                            ? `3px solid ${RED}`
+                            : "1px solid #ccc",
+                        }}
+                      >
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          style={styles.image}
+                        />
+                        <div>
+                          {item.name} ₦{item.price}
+                        </div>
+                        <div style={styles.qtyControls}>
+                          <button onClick={() => addToCart(item)}>+</button>
+                          <span>
+                            {cart.find((c) => c.name === item.name)?.qty || 0}
+                          </span>
+                          <button
+                            onClick={() => removeFromCart(item)}
+                            disabled={!cart.find((c) => c.name === item.name)}
+                          >
+                            −
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            ))}
+          </>
+        }
+        rightPanel={
+          <>
             <h2 style={{ marginTop: 0, color: RED }}>Your Cart</h2>
             {cart.length === 0 ? (
-              <p>No items in cart.</p>
+              <p>No items yet.</p>
             ) : (
-              <ul
-                style={{ paddingLeft: 20, maxHeight: 300, overflowY: "auto" }}
-              >
-                {cart.map((it, i) => (
-                  <li
-                    key={i}
-                    style={{
-                      margin: "8px 0",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>
-                      <strong>{it.label}</strong> x{it.qty} ₦{it.price * it.qty}
-                    </span>
-                    <button
-                      onClick={() => removeFromCart(i)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: RED,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Remove
-                    </button>
+              <ul style={{ paddingLeft: 20 }}>
+                {cart.map((i, idx) => (
+                  <li key={idx} style={{ margin: "8px 0" }}>
+                    {i.name} x{i.qty} = ₦{i.price * i.qty}{" "}
+                    <button onClick={() => removeFromCart(i)}>🗑️</button>
                   </li>
                 ))}
               </ul>
             )}
             <div style={{ marginTop: 16, textAlign: "right" }}>
-              <div>Subtotal: ₦{cartSubtotal}</div>
-              <div>VAT (7.5%): ₦{cartVat}</div>
-              <div style={{ fontWeight: "bold", fontSize: 18 }}>
-                Total: ₦{cartTotal}
+              <div style={{ fontSize: 18, fontWeight: "bold" }}>
+                Total: ₦{total}
               </div>
+              <Button onClick={reviewOrder} disabled={cart.length === 0}>
+                Review & Confirm
+              </Button>
             </div>
-            <Button
-              onClick={submitOrder}
-              style={{ marginTop: 16, width: "100%" }}
-            >
-              Confirm on WhatsApp
-            </Button>
+          </>
+        }
+      />
+
+      {/* REVIEW MODAL */}
+      <Modal
+        open={showReview}
+        onClose={cancelReview}
+        leftPanel={
+          <>
+            <h3 style={{ marginTop: 0 }}>Review Your Order</h3>
+            <ul style={{ paddingLeft: 20 }}>
+              {cart.map((i, idx) => (
+                <li key={idx}>
+                  {i.name} x{i.qty} = ₦{i.price * i.qty}
+                </li>
+              ))}
+            </ul>
+            <div style={{ fontWeight: "bold", marginTop: 16 }}>
+              Total: ₦{total}
+            </div>
           </>
         }
         rightPanel={
           <>
-            <h2 style={{ marginTop: 0, color: RED }}>
-              Customize & Add to Cart
-            </h2>
-            <form onSubmit={(e) => e.preventDefault()}>
-              {/* Jollof */}
-              <label style={styles.label}>Jollof Package</label>
-              <div style={styles.row}>
-                <select
-                  value={jId}
-                  onChange={(e) => setJId(+e.target.value)}
-                  style={styles.select}
-                >
-                  {Object.entries(jLabels).map(([id, label]) => (
-                    <option key={id} value={id}>
-                      {label} ₦{jPrices[id]}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="number"
-                  min="1"
-                  value={jQty}
-                  onChange={(e) => setJQty(+e.target.value)}
-                  style={styles.qty}
-                />
-              </div>
-
-              {/* Protein */}
-              <label style={styles.label}>Protein</label>
-              <div style={styles.row}>
-                <select
-                  value={pId}
-                  onChange={(e) => setPId(+e.target.value)}
-                  style={styles.select}
-                >
-                  {Object.entries(pLabels).map(([id, label]) => (
-                    <option key={id} value={id}>
-                      {label} ₦{pPrices[id]}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="number"
-                  min="1"
-                  value={pQty}
-                  onChange={(e) => setPQty(+e.target.value)}
-                  style={styles.qty}
-                />
-              </div>
-
-              {/* Side */}
-              <label style={styles.label}>Side</label>
-              <div style={styles.counterRow}>
-                <select
-                  value={side}
-                  onChange={(e) => setSide(e.target.value)}
-                  style={styles.select}
-                >
-                  {Object.entries(sPrices).map(([k, v]) => (
-                    <option key={k} value={k}>
-                      {k === "none"
-                        ? "None"
-                        : `${k.charAt(0).toUpperCase() + k.slice(1)}  ₦${v}`}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={() => setSideQty((q) => Math.max(0, q - 1))}
-                  style={styles.counterBtn}
-                >
-                  –
-                </button>
-                <span style={styles.counterDisplay}>{sideQty}</span>
-                <button
-                  type="button"
-                  onClick={() => setSideQty((q) => q + 1)}
-                  style={styles.counterBtn}
-                >
-                  +
-                </button>
-              </div>
-
-              {/* Drink */}
-              <label style={styles.label}>Drink</label>
-              <div style={styles.counterRow}>
-                <select
-                  value={drink}
-                  onChange={(e) => setDrink(e.target.value)}
-                  style={styles.select}
-                >
-                  {Object.entries(dPrices).map(([k, v]) => (
-                    <option key={k} value={k}>
-                      {k === "none"
-                        ? "None"
-                        : `${k.charAt(0).toUpperCase() + k.slice(1)}  ₦${v}`}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={() => setDrinkQty((q) => Math.max(0, q - 1))}
-                  style={styles.counterBtn}
-                >
-                  –
-                </button>
-                <span style={styles.counterDisplay}>{drinkQty}</span>
-                <button
-                  type="button"
-                  onClick={() => setDrinkQty((q) => q + 1)}
-                  style={styles.counterBtn}
-                >
-                  +
-                </button>
-              </div>
-
-              <div style={{ marginTop: 24, display: "flex", gap: 12 }}>
-                <Button onClick={addToCart} style={{ flex: 1 }}>
-                  Add to Cart
-                </Button>
-              </div>
-            </form>
+            <h3 style={{ marginTop: 0 }}>Your Details</h3>
+            <label>Phone Number</label>
+            <input
+              type="tel"
+              value={customerPhone}
+              onChange={(e) => setCustomerPhone(e.target.value)}
+              style={styles.fullInput}
+            />
+            <label>Delivery Address</label>
+            <textarea
+              rows={3}
+              value={customerAddress}
+              onChange={(e) => setCustomerAddress(e.target.value)}
+              style={styles.fullInput}
+            />
+            <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+              <Button onClick={submitOrder}>Send to WhatsApp</Button>
+              <Button
+                onClick={cancelReview}
+                style={{ background: "#ccc", color: CHARCOAL }}
+              >
+                Cancel
+              </Button>
+            </div>
           </>
         }
       />
+
+      {/* RECEIPT BANNER */}
+      <AnimatePresence>
+        {showReceipt && (
+          <motion.div
+            style={styles.receipt}
+            initial={{ y: "100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "100%", opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Order Confirmed ✅
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* CONTACT MODAL */}
       <Modal
@@ -765,14 +809,14 @@ export default function App() {
           <>
             <h2 style={{ marginTop: 0, color: RED }}>Send Us a Message</h2>
             <form onSubmit={submitContact}>
-              <label style={styles.label}>Subject</label>
+              <label>Subject</label>
               <input
                 name="subject"
                 type="text"
                 required
                 style={styles.fullInput}
               />
-              <label style={{ ...styles.label, marginTop: 12 }}>Message</label>
+              <label style={{ marginTop: 12 }}>Message</label>
               <textarea
                 name="message"
                 rows={5}
@@ -801,63 +845,92 @@ export default function App() {
         }
         rightPanel={
           careerSent ? (
-            <div style={{ textAlign: "center", paddingTop: 48 }}>
+            <div style={{ textAlign: "center", padding: 24 }}>
               <h3 style={{ color: RED }}>✅ Sent!</h3>
-              <p>Thanks! We’ll be in touch soon.</p>
+              <p>Thanks! We’ll be in touch.</p>
               <Button onClick={() => setCareerOpen(false)}>Close</Button>
             </div>
           ) : (
-            <>
-              <h2 style={{ marginTop: 0, color: RED }}>Apply Now</h2>
-              <form onSubmit={submitCareer}>
-                <label style={styles.label}>Position</label>
-                <select
-                  value={jobRole}
-                  onChange={(e) => setJobRole(e.target.value)}
-                  style={styles.fullInput}
-                >
-                  <option>Chef</option>
-                  <option>Customer Support</option>
-                </select>
-                <label style={{ ...styles.label, marginTop: 12 }}>
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={appName}
-                  onChange={(e) => setAppName(e.target.value)}
-                  required
-                  style={styles.fullInput}
-                />
-                <label style={styles.label}>Email Address</label>
-                <input
-                  type="email"
-                  value={appEmail}
-                  onChange={(e) => setAppEmail(e.target.value)}
-                  required
-                  style={styles.fullInput}
-                />
-                <label style={styles.label}>Years of Experience</label>
-                <input
-                  type="text"
-                  value={appExp}
-                  onChange={(e) => setAppExp(e.target.value)}
-                  required
-                  style={styles.fullInput}
-                />
-                <Button type="submit" style={{ marginTop: 16, width: "100%" }}>
-                  Submit Application
-                </Button>
-              </form>
-            </>
+            <form onSubmit={submitCareer}>
+              <label>Position</label>
+              <select
+                value={jobRole}
+                onChange={(e) => setJobRole(e.target.value)}
+                style={styles.fullInput}
+              >
+                <option>Chef</option>
+                <option>Customer Support</option>
+              </select>
+              <label style={{ marginTop: 12 }}>Full Name</label>
+              <input
+                type="text"
+                value={appName}
+                onChange={(e) => setAppName(e.target.value)}
+                required
+                style={styles.fullInput}
+              />
+              <label>Email Address</label>
+              <input
+                type="email"
+                value={appEmail}
+                onChange={(e) => setAppEmail(e.target.value)}
+                required
+                style={styles.fullInput}
+              />
+              <label>Years of Experience</label>
+              <input
+                type="text"
+                value={appExp}
+                onChange={(e) => setAppExp(e.target.value)}
+                required
+                style={styles.fullInput}
+              />
+              <Button type="submit" style={{ marginTop: 16, width: "100%" }}>
+                Submit Application
+              </Button>
+            </form>
           )
         }
       />
+
+      {/* FOOTER */}
+      <footer
+        ref={footRef}
+        style={{ ...styles.footer, opacity: footVis ? 1 : 0 }}
+      >
+        <img src={logo} alt="Logo" style={{ height: 40, marginBottom: 16 }} />
+        <div>ibjollof@outlook.com | +234 707 436 0740</div>
+        <div style={{ marginTop: 16 }}>
+          <a
+            href="https://instagram.com/ibjollof"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaInstagram size={20} style={styles.iconHover} />
+          </a>
+          <a
+            href="https://twitter.com/IbadanJollof"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaTwitter size={20} style={styles.iconHover} />
+          </a>
+        </div>
+      </footer>
+
+      {/* WhatsApp button */}
+      <a
+        href="https://chat.whatsapp.com/FU6YGHaEiMpGrj79STqY6k"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={styles.whatsappBtn}
+      >
+        <FaWhatsapp size={32} />
+      </a>
     </div>
   );
 }
 
-// Shared styles
 const styles = {
   nav: {
     color: WHITE,
@@ -883,9 +956,9 @@ const styles = {
     padding: "4rem 2rem",
     gap: "2rem",
   },
-  heroText: { flex: "1 1 400px", maxWidth: 600 },
+  heroText: { flex: "1 1 300px", maxWidth: 600 },
   heroImgWrap: {
-    flex: "1 1 400px",
+    flex: "1 1 300px",
     maxWidth: 600,
     display: "flex",
     justifyContent: "center",
@@ -901,7 +974,21 @@ const styles = {
     transition: "opacity 0.8s",
   },
   sectionTitle: { textAlign: "center", fontSize: "2rem", marginBottom: 16 },
-  grid3: { display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 },
+  whyGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3,1fr)",
+    gap: 24,
+    margin: "0 auto",
+    maxWidth: 900,
+  },
+  cardHover: {
+    padding: 24,
+    border: "1px solid #eee",
+    borderRadius: 8,
+    textAlign: "center",
+    transition: "transform 0.2s,box-shadow 0.2s",
+    cursor: "pointer",
+  },
   about: {
     display: "flex",
     flexWrap: "wrap",
@@ -910,15 +997,66 @@ const styles = {
     gap: "2rem",
     transition: "opacity 0.8s",
   },
-  aboutText: { flex: "1 1 400px", maxWidth: 600 },
-  aboutImgWrap: { flex: "1 1 400px", maxWidth: 600 },
-  footer: {
-    color: WHITE,
-    textAlign: "center",
-    transition: "opacity 0.8s",
-    padding: "3rem 2rem",
+  aboutText: { flex: "1 1 300px", maxWidth: 600 },
+  aboutImgWrap: { flex: "1 1 300px", maxWidth: 600 },
+  partnersSection: { padding: "4rem 2rem", background: WHITE },
+  partnersGrid: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 24,
+    flexWrap: "wrap",
+    marginTop: 16,
   },
-  iconHover: { transition: "color 0.2s" },
+  partnerLogo: { width: 120, height: "auto" },
+  testimonialsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3,1fr)",
+    justifyItems: "center",
+    gap: 24,
+    margin: "0 auto",
+    maxWidth: 900,
+  },
+  foodList: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 10,
+    marginTop: 16,
+  },
+  foodItem: {
+    padding: 10,
+    width: 140,
+    textAlign: "center",
+    borderRadius: 6,
+    background: "#fff",
+  },
+  image: { width: "100%", height: 80, objectFit: "cover", borderRadius: 5 },
+  qtyControls: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 6,
+    marginTop: 6,
+  },
+  fullInput: {
+    width: "100%",
+    padding: 8,
+    margin: "4px 0",
+    borderRadius: 4,
+    border: "1px solid #ccc",
+  },
+  receipt: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    background: "#defade",
+    textAlign: "center",
+    padding: 20,
+    fontSize: 18,
+    fontWeight: "bold",
+    borderTop: "2px solid green",
+  },
   modalOverlay: {
     position: "fixed",
     inset: 0,
@@ -928,15 +1066,26 @@ const styles = {
     justifyContent: "center",
     zIndex: 1000,
   },
-  modalContent: {
+  modalContentTwoCol: {
+    display: "flex",
+    width: "90%",
+    maxWidth: 800,
+    maxHeight: "90vh",
     background: WHITE,
     borderRadius: 12,
-    width: "90%",
-    maxWidth: 700,
-    boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    minHeight: 400,
+    overflow: "hidden",
+  },
+  modalLeft: {
+    flex: "1 1 40%",
+    background: LIGHT_GREEN,
+    padding: 32,
+    overflowY: "auto",
+  },
+  modalRight: {
+    flex: "1 1 60%",
+    padding: 32,
+    position: "relative",
+    overflowY: "auto",
   },
   closeButton: {
     position: "absolute",
@@ -948,35 +1097,14 @@ const styles = {
     cursor: "pointer",
     color: "#888",
   },
-  row: { display: "flex", gap: 12, alignItems: "center", margin: "8px 0" },
-  select: {
-    flex: 2,
-    padding: 8,
-    borderRadius: 4,
-    border: "1px solid #ccc",
-    width: "100%",
+  footer: {
+    background: CHARCOAL,
+    color: WHITE,
+    textAlign: "center",
+    padding: "3rem 2rem",
+    transition: "opacity 0.8s",
   },
-  qty: { width: 72, padding: 8, borderRadius: 4, border: "1px solid #ccc" },
-  label: { fontWeight: "bold", display: "block", marginTop: 16 },
-  counterRow: { display: "flex", alignItems: "center", gap: 8, marginTop: 8 },
-  counterBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 4,
-    border: "1px solid #ccc",
-    background: WHITE,
-    cursor: "pointer",
-    fontSize: "1.25rem",
-    lineHeight: 1,
-  },
-  counterDisplay: { minWidth: 24, textAlign: "center" },
-  fullInput: {
-    width: "100%",
-    padding: 8,
-    margin: "8px 0",
-    borderRadius: 4,
-    border: "1px solid #ccc",
-  },
+  iconHover: { margin: "0 8px", transition: "color 0.2s" },
   whatsappBtn: {
     position: "fixed",
     bottom: 24,

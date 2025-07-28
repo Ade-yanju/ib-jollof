@@ -452,7 +452,7 @@ export default function App() {
             <h2 style={{ color: RED }}>Launching Soon!</h2>
             <p>
               We open on <strong>August 1, 2025</strong> at{" "}
-              <strong>7 AM</strong> Lagos Time.
+              <strong>7 AM</strong> Nigerian Time.
             </p>
             <h3>
               {countdown.days}d {countdown.hours}h {countdown.minutes}m{" "}

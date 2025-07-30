@@ -1,16 +1,16 @@
 // src/App.js
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Lottie from "lottie-react";
 import { FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import logo from "./assets/ibadanJollofLogo.png";
-import steamAnimation from "./steam.json";
 
 // Partner logos
 import partner1 from "./assets/Cyconet.png";
 import partner2 from "./assets/pepsi.png";
 import partner3 from "./assets/Glovo.png";
 import partner4 from "./assets/dreamers.png";
+import partner5 from "./assets/manlikeb.png";
+import partner6 from "./assets/zekasNaturals.png";
 
 // Hero & food images
 import gallery1 from "./assets/BeefJollofPack.png";
@@ -63,9 +63,9 @@ import cust7 from "./assets/cust7.png";
 const RED = "#B91C1C",
   CHARCOAL = "#111",
   WHITE = "#FFF",
-  LIGHT_GREEN = "#E6F4EA";
+  LIGHT_GREEN = "rgba(255,255,255,0.25)";
 
-// Add full testimonials data
+// Testimonials data
 const testimonials = [
   {
     img: cust1,
@@ -89,7 +89,7 @@ const testimonials = [
     img: cust4,
     name: "Grace",
     location: "Apata, Ibadan",
-    text: "My go‑to for Friday night meals. Highly recommend!",
+    text: "My go-to for Friday night meals. Highly recommend!",
   },
   {
     img: cust5,
@@ -111,6 +111,16 @@ const testimonials = [
   },
 ];
 
+// Partners data (for fade carousel)
+const partnersData = [
+  { img: partner1, name: "Cyconet", text: "Our Tech Infrastructure Partner" },
+  { img: partner2, name: "Pepsi", text: "Official Beverage Partner" },
+  { img: partner3, name: "Glovo", text: "Delivery Partner" },
+  { img: partner4, name: "Dreamers", text: "Creative Partner" },
+  { img: partner5, name: "MANLIKEB", text: "Creative Partner" },
+  { img: partner6, name: "Zekas Naturals", text: "Skin and Facial Partner" },
+];
+
 function Button({ onClick, disabled, children, style = {} }) {
   return (
     <button
@@ -121,10 +131,10 @@ function Button({ onClick, disabled, children, style = {} }) {
         background: disabled ? "#ccc" : RED,
         color: disabled ? "#666" : WHITE,
         border: "none",
-        borderRadius: 6,
+        borderRadius: 12,
         cursor: disabled ? "not-allowed" : "pointer",
         fontSize: "1rem",
-        transition: "background 0.2s",
+        backdropFilter: "blur(6px)",
         ...style,
       }}
       onMouseEnter={(e) =>
@@ -171,13 +181,11 @@ function useFadeIn(threshold = 0.3) {
 }
 
 const foodItems = [
-  // Jollof
   { name: "Jambalaya Rice", price: 3500, image: main1, type: "jollof" },
   { name: "Chicken Jollof", price: 2000, image: main17, type: "jollof" },
   { name: "Beef Jollof", price: 2000, image: main20, type: "jollof" },
   { name: "Sea Food Jollof", price: 3500, image: main18, type: "jollof" },
   { name: "Native Jollof", price: 2000, image: main19, type: "jollof" },
-  // Proteins
   { name: "Gizzard", price: 1500, image: main6, type: "protein" },
   { name: "Fried Fish", price: 1200, image: main3, type: "protein" },
   { name: "Chicken", price: 1200, image: main2, type: "protein" },
@@ -185,11 +193,9 @@ const foodItems = [
   { name: "Turkey", price: 2500, image: main5, type: "protein" },
   { name: "Beef", price: 600, image: main22, type: "protein" },
   { name: "Chicken Wing", price: 2000, image: main21, type: "protein" },
-  // Sides
   { name: "Moi-Moi", price: 1200, image: main9, type: "side" },
   { name: "Dodo", price: 1000, image: main7, type: "side" },
   { name: "Coleslaw", price: 1000, image: main8, type: "side" },
-  // Drinks
   { name: "Fanta", price: 500, image: main12, type: "drink" },
   { name: "Water", price: 200, image: main13, type: "drink" },
   { name: "Tiger-Nut", price: 1500, image: main11, type: "drink" },
@@ -200,14 +206,14 @@ const foodItems = [
 ];
 
 export default function App() {
-  // Nav/modals
+  // Nav & modals
   const [orderOpen, setOrderOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [careerOpen, setCareerOpen] = useState(false);
   const [launchModal, setLaunchModal] = useState(false);
   const [hoursModal, setHoursModal] = useState(false);
 
-  // Countdown state
+  // Countdown
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -229,20 +235,20 @@ export default function App() {
     [orderHistory]
   );
 
-  // Customer info & order flow
+  // Order flow
   const [showReview, setShowReview] = useState(false);
   const [showReceipt, setShowReceipt] = useState(false);
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
 
-  // Careers form
+  // Careers
   const [jobRole, setJobRole] = useState("Chef");
   const [appName, setAppName] = useState("");
   const [appEmail, setAppEmail] = useState("");
   const [appExp, setAppExp] = useState("");
   const [careerSent, setCareerSent] = useState(false);
 
-  // Fade‑in
+  // Fade-in
   const [whyRef, whyVis] = useFadeIn();
   const [aboutRef, aboutVis] = useFadeIn();
   const [testRef, testVis] = useFadeIn();
@@ -273,7 +279,7 @@ export default function App() {
     return () => clearInterval(id);
   }, [heroGallery.length]);
 
-  // Testimonials carousel (use full objects)
+  // Testimonials fade
   const [tIndex, setTIndex] = useState(0);
   useEffect(() => {
     const id = setInterval(
@@ -282,48 +288,42 @@ export default function App() {
     );
     return () => clearInterval(id);
   }, []);
-  const visibleTestimonials = [0, 1, 2].map(
-    (offset) => testimonials[(tIndex + offset) % testimonials.length]
-  );
+  const currentTestimonial = testimonials[tIndex];
 
-  // Partners carousel
-  const partnerLogos = [partner1, partner2, partner3, partner4];
+  // Partners fade
   const [pIndex, setPIndex] = useState(0);
   useEffect(() => {
     const id = setInterval(
-      () => setPIndex((i) => (i + 1) % partnerLogos.length),
-      4000
+      () => setPIndex((i) => (i + 1) % partnersData.length),
+      5000
     );
     return () => clearInterval(id);
   }, []);
-  const visiblePartners = [0, 1, 2].map(
-    (offset) => partnerLogos[(pIndex + offset) % partnerLogos.length]
-  );
+  const currentPartner = partnersData[pIndex];
 
-  // Business‑hours & launch logic
-  const launchDate = new Date(2025, 7, 1, 1, 0, 0);
+  // Launch logic → Aug 15 2025 @ 7AM Lagos
+  const launchDate = new Date(2025, 7, 15, 7, 0, 0);
   useEffect(() => {
-    const now = new Date();
-    if (now < launchDate) {
+    if (new Date() < launchDate) {
       setLaunchModal(true);
       startCountdown(launchDate);
     }
   }, []);
   useEffect(() => {
     if (!launchModal) return;
-    const timer = setInterval(() => startCountdown(launchDate), 1000);
-    return () => clearInterval(timer);
+    const id = setInterval(() => startCountdown(launchDate), 1000);
+    return () => clearInterval(id);
   }, [launchModal]);
   useEffect(() => {
     if (!hoursModal || !hoursTargetDate) return;
     startCountdown(hoursTargetDate);
-    const timer = setInterval(() => startCountdown(hoursTargetDate), 1000);
-    return () => clearInterval(timer);
+    const id = setInterval(() => startCountdown(hoursTargetDate), 1000);
+    return () => clearInterval(id);
   }, [hoursModal, hoursTargetDate]);
 
   function startCountdown(target) {
-    const now = new Date();
-    const diff = target - now;
+    const now = new Date(),
+      diff = target - now;
     if (diff <= 0) {
       setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       setLaunchModal(false);
@@ -337,23 +337,21 @@ export default function App() {
     setCountdown({ days, hours, minutes, seconds });
   }
 
-  // Cart operations
+  // Cart ops
   const addToCart = (item) =>
     setCart((c) => {
-      const found = c.find((i) => i.name === item.name);
-      if (found)
-        return c.map((i) =>
-          i.name === item.name ? { ...i, qty: i.qty + 1 } : i
-        );
-      return [...c, { ...item, qty: 1 }];
+      const f = c.find((x) => x.name === item.name);
+      return f
+        ? c.map((x) => (x.name === item.name ? { ...x, qty: x.qty + 1 } : x))
+        : [...c, { ...item, qty: 1 }];
     });
   const removeFromCart = (item) =>
     setCart((c) =>
       c
-        .map((i) => (i.name === item.name ? { ...i, qty: i.qty - 1 } : i))
-        .filter((i) => i.qty > 0)
+        .map((x) => (x.name === item.name ? { ...x, qty: x.qty - 1 } : x))
+        .filter((x) => x.qty > 0)
     );
-  const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
 
   // Review & confirm
   const reviewOrder = () => setShowReview(true);
@@ -385,47 +383,45 @@ export default function App() {
   const submitContact = (e) => {
     e.preventDefault();
     const { subject, message } = e.target;
-    window.location.href =
-      `mailto:ibjollof@outlook.com?subject=${encodeURIComponent(
-        subject.value
-      )}` + `&body=${encodeURIComponent(message.value)}`;
+    window.location.href = `mailto:ibjollof@outlook.com?subject=${encodeURIComponent(
+      subject.value
+    )}&body=${encodeURIComponent(message.value)}`;
   };
   const submitCareer = (e) => {
     e.preventDefault();
     setCareerSent(true);
   };
 
-  // Helpers & nav handlers
+  // Helpers & nav
   const now = new Date();
   const openHour = 7,
     closeHour = 19;
   const isBeforeLaunch = now < launchDate;
   const isBusinessOpen =
     !isBeforeLaunch && now.getHours() >= openHour && now.getHours() < closeHour;
+
   const handleOrderClick = () => {
-    if (isBeforeLaunch) return setLaunchModal(true);
+    if (isBeforeLaunch) {
+      setLaunchModal(true);
+      return;
+    }
     if (!isBusinessOpen) {
-      let nextOpen;
-      if (now.getHours() < openHour) {
-        nextOpen = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate(),
-          openHour
-        );
-      } else {
-        nextOpen = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate() + 1,
-          openHour
-        );
-      }
+      const nextOpen =
+        now.getHours() < openHour
+          ? new Date(now.getFullYear(), now.getMonth(), now.getDate(), openHour)
+          : new Date(
+              now.getFullYear(),
+              now.getMonth(),
+              now.getDate() + 1,
+              openHour
+            );
       setHoursTargetDate(nextOpen);
-      return setHoursModal(true);
+      setHoursModal(true);
+      return;
     }
     setOrderOpen(true);
   };
+
   const goHome = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setOrderOpen(false);
@@ -443,7 +439,7 @@ export default function App() {
         color: CHARCOAL,
       }}
     >
-      {/* LAUNCH MODAL */}
+      {/* FIRST-ACCESS LAUNCH MODAL */}
       <Modal
         open={launchModal}
         onClose={() => setLaunchModal(false)}
@@ -451,48 +447,17 @@ export default function App() {
           <div style={{ textAlign: "center", padding: 24 }}>
             <h2 style={{ color: RED }}>Launching Soon!</h2>
             <p>
-              We open on <strong>August 1, 2025</strong> at{" "}
-              <strong>7 AM</strong> Nigerian Time.
+              We open on <strong>August 15, 2025</strong> at{" "}
+              <strong>7 AM</strong> Lagos Time.
             </p>
             <h3>
               {countdown.days}d {countdown.hours}h {countdown.minutes}m{" "}
               {countdown.seconds}s
             </h3>
-          </div>
-        }
-        rightPanel={
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-            }}
-          >
-            <img src={logo} alt="Logo" style={{ width: 120 }} />
-          </div>
-        }
-      />
-
-      {/* HOURS MODAL */}
-      <Modal
-        open={hoursModal}
-        onClose={() => setHoursModal(false)}
-        leftPanel={
-          <div style={{ textAlign: "center", padding: 24 }}>
-            <h2 style={{ color: RED }}>We’re Closed</h2>
-            <p>Open 7 AM–7 PM Lagos Time</p>
-            <p>Next opening in:</p>
-            <h3>
-              {countdown.days}d {countdown.hours}h {countdown.minutes}m{" "}
-              {countdown.seconds}s
-            </h3>
-            {hoursTargetDate && (
-              <p>
-                {hoursTargetDate.toLocaleDateString()}{" "}
-                {hoursTargetDate.toLocaleTimeString()}
-              </p>
-            )}
+            <p style={{ marginTop: 16 }}>
+              Once we’re open, click the <strong>Order</strong> button in the
+              nav to place your order.
+            </p>
           </div>
         }
         rightPanel={<></>}
@@ -501,12 +466,17 @@ export default function App() {
       {/* NAV */}
       <nav style={{ ...styles.nav, background: CHARCOAL }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <img src={logo} alt="Logo" style={{ height: 36 }} />
+          <motion.img
+            src={logo}
+            alt="Logo"
+            style={{ height: 36 }}
+            animate={{ rotate: [0, 360] }}
+            transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+          />
           <motion.span
             style={{ color: WHITE, fontSize: "1.25rem", fontWeight: "bold" }}
-            initial={{ scale: 1 }}
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ repeat: Infinity, duration: 2 }}
+            animate={{ scale: [1, 1.05, 1], rotateY: [0, 180, 0] }}
+            transition={{ repeat: Infinity, duration: 4 }}
           >
             Ibadan Jollof
           </motion.span>
@@ -528,7 +498,7 @@ export default function App() {
       </nav>
 
       {/* HERO */}
-      <section id="home" style={styles.hero}>
+      <section id="home" style={{ ...styles.hero, ...styles.glass }}>
         <div style={styles.heroText}>
           <h1 style={{ fontSize: "2.75rem", color: RED, marginBottom: 16 }}>
             Explore Delicious African Cuisine
@@ -544,15 +514,19 @@ export default function App() {
             Order Food
           </Button>
         </div>
-        <div style={styles.heroImgWrap}>
+        <motion.div
+          style={styles.heroImgWrap}
+          animate={{ rotateY: [0, 10, -10, 0] }}
+          transition={{ repeat: Infinity, duration: 6 }}
+        >
           <img src={heroGallery[gIndex]} alt="Hero" style={styles.heroImg} />
-        </div>
+        </motion.div>
       </section>
 
       {/* WHY CHOOSE US */}
       <section
         ref={whyRef}
-        style={{ ...styles.section, opacity: whyVis ? 1 : 0 }}
+        style={{ ...styles.section, opacity: whyVis ? 1 : 0, ...styles.glass }}
       >
         <h2 style={styles.sectionTitle}>
           Why <span style={{ color: RED }}>Choose Us</span>
@@ -566,11 +540,16 @@ export default function App() {
             ["🎉", "Sponsor events", "Community initiatives."],
             ["📞", "24/7 support", "Help anytime."],
           ].map(([icon, title, desc], i) => (
-            <div key={i} style={styles.cardHover}>
+            <motion.div
+              key={i}
+              style={styles.cardHover}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
               <div style={{ fontSize: "2rem" }}>{icon}</div>
               <h3 style={{ margin: "12px 0", color: CHARCOAL }}>{title}</h3>
               <p style={{ color: "#555" }}>{desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -578,7 +557,7 @@ export default function App() {
       {/* ABOUT */}
       <section
         ref={aboutRef}
-        style={{ ...styles.about, opacity: aboutVis ? 1 : 0 }}
+        style={{ ...styles.about, opacity: aboutVis ? 1 : 0, ...styles.glass }}
       >
         <div style={styles.aboutText}>
           <h2 style={{ fontSize: "2rem", color: RED }}>About Us</h2>
@@ -591,45 +570,92 @@ export default function App() {
           </Button>
         </div>
         <div style={styles.aboutImgWrap}>
-          <img src={heroGallery[gIndex]} alt="About" style={styles.heroImg} />
+          <motion.img
+            src={heroGallery[gIndex]}
+            alt="About"
+            style={styles.heroImg}
+            animate={{ rotateY: [0, -10, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 6 }}
+          />
         </div>
       </section>
 
-      {/* PARTNERS CAROUSEL */}
-      <section style={styles.partnersSection}>
+      {/* PARTNERS (fade carousel) */}
+      <section style={{ ...styles.partnersSection, ...styles.glass }}>
         <h2 style={styles.sectionTitle}>
           Our <span style={{ color: RED }}>Partners</span>
         </h2>
-        <div style={styles.partnersGrid}>
-          {visiblePartners.map((img, i) => (
-            <img
-              key={i}
-              src={img}
-              alt={`Partner ${i + 1}`}
-              style={styles.partnerLogo}
-            />
-          ))}
+        <div
+          style={{
+            position: "relative",
+            width: 300,
+            margin: "0 auto",
+            height: 180,
+          }}
+        >
+          <AnimatePresence>
+            <motion.div
+              key={pIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8 }}
+              style={{
+                position: "absolute",
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              <img
+                src={currentPartner.img}
+                alt={currentPartner.name}
+                style={{
+                  width: 80,
+                  height: 80,
+                  objectFit: "contain",
+                  margin: "0 auto",
+                }}
+              />
+              <h3 style={{ margin: "12px 0", color: CHARCOAL }}>
+                {currentPartner.name}
+              </h3>
+              <p style={{ color: "#555", lineHeight: 1.4 }}>
+                {currentPartner.text}
+              </p>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
-      {/* TESTIMONIALS CAROUSEL */}
+      {/* TESTIMONIALS */}
       <section
         ref={testRef}
-        style={{ ...styles.section, opacity: testVis ? 1 : 0 }}
+        style={{ ...styles.section, opacity: testVis ? 1 : 0, ...styles.glass }}
       >
         <h2 style={styles.sectionTitle}>
           What <span style={{ color: RED }}>Our Customers Say</span>
         </h2>
-        <div style={styles.testimonialsGrid}>
-          {visibleTestimonials.map((t, i) => (
-            <div
-              key={i}
-              style={{ padding: 24, border: "1px solid #eee", borderRadius: 8 }}
+        <div
+          style={{
+            position: "relative",
+            width: 300,
+            margin: "0 auto",
+            height: 180,
+          }}
+        >
+          <AnimatePresence>
+            <motion.div
+              key={tIndex}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8 }}
+              style={{ position: "absolute", width: "100%" }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                 <img
-                  src={t.img}
-                  alt={t.name}
+                  src={currentTestimonial.img}
+                  alt={currentTestimonial.name}
                   style={{
                     width: 56,
                     height: 56,
@@ -638,23 +664,27 @@ export default function App() {
                   }}
                 />
                 <div>
-                  <strong>{t.name}</strong>
+                  <strong>{currentTestimonial.name}</strong>
                   <br />
-                  <small style={{ color: RED }}>{t.location}</small>
+                  <small style={{ color: RED }}>
+                    {currentTestimonial.location}
+                  </small>
                 </div>
               </div>
-              <p style={{ margin: "16px 0", lineHeight: 1.6 }}>“{t.text}”</p>
-            </div>
-          ))}
+              <p style={{ margin: "16px 0", lineHeight: 1.4 }}>
+                "{currentTestimonial.text}"
+              </p>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
-      {/* ORDER MODAL (LIST VIEW) */}
+      {/* ORDER MODAL (glass) */}
       <Modal
         open={orderOpen}
         onClose={() => setOrderOpen(false)}
         leftPanel={
-          <>
+          <div style={styles.glassPane}>
             {["jollof", "protein", "side", "drink"].map((type) => (
               <div key={type}>
                 <h3
@@ -672,7 +702,7 @@ export default function App() {
                           ...styles.foodItem,
                           border: cart.find((c) => c.name === item.name)
                             ? `3px solid ${RED}`
-                            : "1px solid #ccc",
+                            : "1px solid rgba(255,255,255,0.4)",
                         }}
                       >
                         <img
@@ -681,7 +711,7 @@ export default function App() {
                           style={styles.image}
                         />
                         <div>
-                          {item.name} ₦{item.price}
+                          {item.name} — ₦{item.price}
                         </div>
                         <div style={styles.qtyControls}>
                           <button onClick={() => addToCart(item)}>+</button>
@@ -700,10 +730,10 @@ export default function App() {
                 </div>
               </div>
             ))}
-          </>
+          </div>
         }
         rightPanel={
-          <>
+          <div style={styles.glassPane}>
             <h2 style={{ marginTop: 0, color: RED }}>Your Cart</h2>
             {cart.length === 0 ? (
               <p>No items yet.</p>
@@ -711,7 +741,7 @@ export default function App() {
               <ul style={{ paddingLeft: 20 }}>
                 {cart.map((i, idx) => (
                   <li key={idx} style={{ margin: "8px 0" }}>
-                    {i.name} x{i.qty} = ₦{i.price * i.qty}{" "}
+                    {i.name} x{i.qty} = ₦{i.price * i.qty}
                     <button onClick={() => removeFromCart(i)}>🗑️</button>
                   </li>
                 ))}
@@ -725,7 +755,7 @@ export default function App() {
                 Review & Confirm
               </Button>
             </div>
-          </>
+          </div>
         }
       />
 
@@ -734,7 +764,7 @@ export default function App() {
         open={showReview}
         onClose={cancelReview}
         leftPanel={
-          <>
+          <div style={styles.glassPane}>
             <h3 style={{ marginTop: 0 }}>Review Your Order</h3>
             <ul style={{ paddingLeft: 20 }}>
               {cart.map((i, idx) => (
@@ -746,10 +776,10 @@ export default function App() {
             <div style={{ fontWeight: "bold", marginTop: 16 }}>
               Total: ₦{total}
             </div>
-          </>
+          </div>
         }
         rightPanel={
-          <>
+          <div style={styles.glassPane}>
             <h3 style={{ marginTop: 0 }}>Your Details</h3>
             <label>Phone Number</label>
             <input
@@ -774,11 +804,11 @@ export default function App() {
                 Cancel
               </Button>
             </div>
-          </>
+          </div>
         }
       />
 
-      {/* RECEIPT BANNER */}
+      {/* RECEIPT */}
       <AnimatePresence>
         {showReceipt && (
           <motion.div
@@ -798,15 +828,15 @@ export default function App() {
         open={contactOpen}
         onClose={() => setContactOpen(false)}
         leftPanel={
-          <>
+          <div style={styles.glassPane}>
             <h2 style={{ marginTop: 0, color: RED }}>Contact Us</h2>
             <p style={{ lineHeight: 1.6, color: CHARCOAL }}>
               Questions or feedback? Let us know.
             </p>
-          </>
+          </div>
         }
         rightPanel={
-          <>
+          <div style={styles.glassPane}>
             <h2 style={{ marginTop: 0, color: RED }}>Send Us a Message</h2>
             <form onSubmit={submitContact}>
               <label>Subject</label>
@@ -827,7 +857,7 @@ export default function App() {
                 Send Email
               </Button>
             </form>
-          </>
+          </div>
         }
       />
 
@@ -836,12 +866,12 @@ export default function App() {
         open={careerOpen}
         onClose={() => setCareerOpen(false)}
         leftPanel={
-          <>
+          <div style={styles.glassPane}>
             <h2 style={{ marginTop: 0, color: RED }}>Join Our Team</h2>
             <p style={{ lineHeight: 1.6, color: CHARCOAL }}>
               We’re hiring! Fill in your application.
             </p>
-          </>
+          </div>
         }
         rightPanel={
           careerSent ? (
@@ -852,42 +882,44 @@ export default function App() {
             </div>
           ) : (
             <form onSubmit={submitCareer}>
-              <label>Position</label>
-              <select
-                value={jobRole}
-                onChange={(e) => setJobRole(e.target.value)}
-                style={styles.fullInput}
-              >
-                <option>Chef</option>
-                <option>Customer Support</option>
-              </select>
-              <label style={{ marginTop: 12 }}>Full Name</label>
-              <input
-                type="text"
-                value={appName}
-                onChange={(e) => setAppName(e.target.value)}
-                required
-                style={styles.fullInput}
-              />
-              <label>Email Address</label>
-              <input
-                type="email"
-                value={appEmail}
-                onChange={(e) => setAppEmail(e.target.value)}
-                required
-                style={styles.fullInput}
-              />
-              <label>Years of Experience</label>
-              <input
-                type="text"
-                value={appExp}
-                onChange={(e) => setAppExp(e.target.value)}
-                required
-                style={styles.fullInput}
-              />
-              <Button type="submit" style={{ marginTop: 16, width: "100%" }}>
-                Submit Application
-              </Button>
+              <div style={styles.glassPane}>
+                <label>Position</label>
+                <select
+                  value={jobRole}
+                  onChange={(e) => setJobRole(e.target.value)}
+                  style={styles.fullInput}
+                >
+                  <option>Chef</option>
+                  <option>Customer Support</option>
+                </select>
+                <label style={{ marginTop: 12 }}>Full Name</label>
+                <input
+                  type="text"
+                  value={appName}
+                  onChange={(e) => setAppName(e.target.value)}
+                  required
+                  style={styles.fullInput}
+                />
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  value={appEmail}
+                  onChange={(e) => setAppEmail(e.target.value)}
+                  required
+                  style={styles.fullInput}
+                />
+                <label>Years of Experience</label>
+                <input
+                  type="text"
+                  value={appExp}
+                  onChange={(e) => setAppExp(e.target.value)}
+                  required
+                  style={styles.fullInput}
+                />
+                <Button type="submit" style={{ marginTop: 16, width: "100%" }}>
+                  Submit Application
+                </Button>
+              </div>
             </form>
           )
         }
@@ -899,7 +931,7 @@ export default function App() {
         style={{ ...styles.footer, opacity: footVis ? 1 : 0 }}
       >
         <img src={logo} alt="Logo" style={{ height: 40, marginBottom: 16 }} />
-        <div>ibjollof@outlook.com | +234 707 436 0740</div>
+        <div>ibjollof@outlook.com | +234 707 436 0740</div>
         <div style={{ marginTop: 16 }}>
           <a
             href="https://instagram.com/ibjollof"
@@ -918,7 +950,7 @@ export default function App() {
         </div>
       </footer>
 
-      {/* WhatsApp button */}
+      {/* WhatsApp */}
       <a
         href="https://chat.whatsapp.com/FU6YGHaEiMpGrj79STqY6k"
         target="_blank"
@@ -932,6 +964,20 @@ export default function App() {
 }
 
 const styles = {
+  glass: {
+    background: LIGHT_GREEN,
+    backdropFilter: "blur(10px)",
+    borderRadius: 16,
+    padding: "2rem",
+    margin: "1rem 0",
+  },
+  glassPane: {
+    background: LIGHT_GREEN,
+    backdropFilter: "blur(8px)",
+    borderRadius: 12,
+    padding: "1.5rem",
+    marginBottom: "1rem",
+  },
   nav: {
     color: WHITE,
     position: "sticky",
@@ -962,15 +1008,16 @@ const styles = {
     maxWidth: 600,
     display: "flex",
     justifyContent: "center",
+    perspective: 800,
   },
   heroImg: {
     width: "100%",
     borderRadius: 12,
     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    transformStyle: "preserve-3d",
   },
   section: {
     padding: "4rem 2rem",
-    background: WHITE,
     transition: "opacity 0.8s",
   },
   sectionTitle: { textAlign: "center", fontSize: "2rem", marginBottom: 16 },
@@ -983,40 +1030,22 @@ const styles = {
   },
   cardHover: {
     padding: 24,
-    border: "1px solid #eee",
-    borderRadius: 8,
+    borderRadius: 12,
     textAlign: "center",
-    transition: "transform 0.2s,box-shadow 0.2s",
     cursor: "pointer",
+    background: LIGHT_GREEN,
+    backdropFilter: "blur(6px)",
   },
   about: {
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
-    padding: "4rem 2rem",
     gap: "2rem",
     transition: "opacity 0.8s",
   },
   aboutText: { flex: "1 1 300px", maxWidth: 600 },
   aboutImgWrap: { flex: "1 1 300px", maxWidth: 600 },
-  partnersSection: { padding: "4rem 2rem", background: WHITE },
-  partnersGrid: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 24,
-    flexWrap: "wrap",
-    marginTop: 16,
-  },
-  partnerLogo: { width: 120, height: "auto" },
-  testimonialsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(3,1fr)",
-    justifyItems: "center",
-    gap: 24,
-    margin: "0 auto",
-    maxWidth: 900,
-  },
+  partnersSection: { padding: "4rem 2rem" },
   foodList: {
     display: "flex",
     flexWrap: "wrap",
@@ -1028,8 +1057,9 @@ const styles = {
     padding: 10,
     width: 140,
     textAlign: "center",
-    borderRadius: 6,
-    background: "#fff",
+    borderRadius: 8,
+    background: LIGHT_GREEN,
+    backdropFilter: "blur(6px)",
   },
   image: { width: "100%", height: 80, objectFit: "cover", borderRadius: 5 },
   qtyControls: {
@@ -1044,6 +1074,7 @@ const styles = {
     margin: "4px 0",
     borderRadius: 4,
     border: "1px solid #ccc",
+    backdropFilter: "blur(4px)",
   },
   receipt: {
     position: "fixed",
@@ -1071,16 +1102,12 @@ const styles = {
     width: "90%",
     maxWidth: 800,
     maxHeight: "90vh",
-    background: WHITE,
-    borderRadius: 12,
+    borderRadius: 16,
     overflow: "hidden",
-  },
-  modalLeft: {
-    flex: "1 1 40%",
     background: LIGHT_GREEN,
-    padding: 32,
-    overflowY: "auto",
+    backdropFilter: "blur(10px)",
   },
+  modalLeft: { flex: "1 1 40%", padding: 32, overflowY: "auto" },
   modalRight: {
     flex: "1 1 60%",
     padding: 32,
